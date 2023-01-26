@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "ndjson": "^2.0.0",
+    "node-fetch": "^3.3.0",
     "roboto-fontface": "*",
     "vue": "^3.2.45",
     "vue-router": "4",
@@ -26,7 +28,10 @@
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
+    "@types/ndjson": "^2.0.1",
     "@types/webfontloader": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "eslint": "^8.32.0",
@@ -36,7 +41,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
-    "typescript": "^4.9.3",
+    "typescript": "^4.9.4",
     "vite": "^4.0.0",
     "vite-plugin-vuetify": "^1.0.0-alpha.12",
     "vitest": "^0.28.2",
