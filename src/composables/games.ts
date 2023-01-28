@@ -17,6 +17,7 @@ export const useGames = () => {
       },
       onStartFetching: () => {
         // The callback is called when the fetching starts
+        games.value = []
         console.log(`Fetching starts`)
         loading.value = true
       },
