@@ -13,8 +13,7 @@
   },
   "lint-staged": {
     "*.{js,vue,ts}": [
-      "yarn lint",
-      "git add"
+      "yarn lint"
     ]
   },
   "dependencies": {

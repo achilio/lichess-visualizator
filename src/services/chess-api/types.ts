@@ -21,40 +21,33 @@ export interface CallbackOnGame {
   (game: Game): void
 }
 
+export interface Player {
+  user: {
+    name: string
+    id: string
+  }
+  rating: number
+  ratingDiff: number
+}
+
 export interface Game {
   id: string
-  // rated: boolean
-  // variant: string
-  // speed: string
-  // perf: string
-  // createdAt: number
-  // lastMoveAt: number
-  // turns: number
-  // color: string
-  // status: string
-  // winner: string
-  // players: {
-  //   white: {
-  //     userId: string
-  //     rating: number
-  //     ratingDiff: number
-  //   }
-  //   black: {
-  //     userId: string
-  //     rating: number
-  //     ratingDiff: number
-  //   }
-  // }
-  // moves: string
-  // opening: {
-  //   code: string
-  //   name: string
-  //   ply: number
-  // }
-  // clock: {
-  //   initial: number
-  //   increment: number
-  //   totalTime: number
-  // }
-  // url: string
+  rated: boolean
+  variant: string
+  speed: string
+  perf: string
+  createdAt: number
+  lastMoveAt: number
+  status: string
+  players: {
+    white: Player
+    black: Player
+  }
+  winner: string
+  moves: string
+  clock: {
+    initial: number
+    increment: number
+    totalTime: number
+  }
 }
