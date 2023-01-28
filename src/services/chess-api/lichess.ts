@@ -31,8 +31,7 @@ export default class LichessApi extends ChessApi {
       ?.pipe(ndjson.parse())
       .on('resume', this.config.onStartFetching)
       .on('end', this.config.onEndFetching)
-      .on('data', (data: any) => {
-        const game: Game = { id: data.id }
+      .on('data', (game: Game) => {
         this.config.onGame(game)
       })
   }
