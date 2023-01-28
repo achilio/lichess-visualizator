@@ -1,6 +1,8 @@
-# Vue 3 + TypeScript + Vite + Vuetify + Vue Router
+# Lichess Stats Visualizer
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3, Vite, Vuetify, Vue Router, and TypeScript.
+Code for the lichess stats visualizer. The app is not available yet.
+
+# Development
 
 ## Recommended IDE Setup
 
