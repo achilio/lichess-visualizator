@@ -20,19 +20,18 @@ export default class LichessApi extends ChessApi {
   async startFetching(): Promise<void> {
     const username = this.config.username
     const max = this.config.maxGames
-    const stream = request(
-      `${baseApi}/games/user/${username}?max=${max}`,
-      httpParams
-    )
+    const onGame = this.config.onGame
+    const onStartFetching = this.config.onStartFetching
+    const onEndFetching = this.config.onEndFetching
+    request(`${baseApi}/games/user/${username}?max=${max}`, httpParams)
       .on('response', (response) => {
         if (response.statusCode !== 200) {
-          this.config.onEndFetching()
+          onEndFetching && onEndFetching()
           throw new Error(`Failed to fetch games ${response}`)
-        } else {
-          this.config.onStartFetching()
         }
+        onStartFetching && onStartFetching()
       })
-      .on('end', this.config.onEndFetching)
+      .on('end', () => onEndFetching && onEndFetching())
       .on('data', (data: Uint8Array) => {
         // The data is a stream of JSON objects separated by newlines
         // Sometimes, it sends several objects in one chunk
@@ -40,7 +39,7 @@ export default class LichessApi extends ChessApi {
         const games: string[] = data.toString().split(/[\r\n]/)
         games.pop()
         games.forEach((game: string) => {
-          this.config.onGame(JSON.parse(game) as Game)
+          onGame && onGame(JSON.parse(game) as Game)
         })
       })
   }

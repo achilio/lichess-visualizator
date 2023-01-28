@@ -12,9 +12,9 @@ export abstract class ChessApi {
 export interface ChessApiConfig {
   username: string
   maxGames: number
-  onGame: (game: Game) => void
-  onStartFetching: () => void
-  onEndFetching: () => void
+  onGame?: (game: Game) => void
+  onStartFetching?: () => void
+  onEndFetching?: () => void
 }
 
 export interface CallbackOnGame {
