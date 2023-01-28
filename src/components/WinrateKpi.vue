@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    :title="'Winrate'"
-    :text="winrate + ' %'"
-    :max-width="120"
-    :max-height="120"
-  >
-  </v-card>
+  <v-card :title="'Winrate'" :text="winrate + ' %'"> </v-card>
 </template>
 
 <script setup lang="ts">
@@ -24,3 +18,8 @@ const winrate = computed(() => {
   return wr
 })
 </script>
+<style scoped>
+.v-card {
+  height: 100%;
+}
+</style>
