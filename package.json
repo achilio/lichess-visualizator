@@ -18,8 +18,7 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
-    "ndjson": "^2.0.0",
-    "node-fetch": "^3.3.0",
+    "request": "^2.88.2",
     "roboto-fontface": "*",
     "vue": "^3.2.45",
     "vue-router": "4",
@@ -27,7 +26,9 @@
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
-    "@types/ndjson": "^2.0.1",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+    "@types/request": "^2.48.8",
     "@types/webfontloader": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
