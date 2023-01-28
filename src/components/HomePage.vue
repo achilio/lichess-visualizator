@@ -23,6 +23,8 @@ import { useGames } from '@/composables/games'
 import WinrateKpi from './WinrateKpi.vue'
 import OpeningsBarChart from './OpeningsBarChart.vue'
 
+const name = 'HomePage'
+
 const { games, loadGames } = useGames()
 loadGames('JeNeSuisPasKasparov', 1000)
 </script>
