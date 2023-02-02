@@ -2,7 +2,7 @@
   <v-chart class="chart" :option="option" autoresize />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
@@ -13,20 +13,20 @@ import {
   AxisPointerComponent,
   GridComponent,
 } from 'echarts/components'
-import VChart, { THEME_KEY } from 'vue-echarts'
+import VChart from 'vue-echarts'
 import { ref, provide, computed } from 'vue'
 import { useGames } from '@/composables/games'
-import lodash from 'lodash'
+import { Game } from '@/services/chess-api/types'
+import _ from 'lodash'
 
 const name = 'OpeningsBarChart'
 
-const { games } = useGames()
+const { games, currentPlayer } = useGames()
 // Find and sort openings by frequency with lodash and reverse the array to get the most frequent openings first
 
 const openings = computed(() =>
-  lodash
-    .chain(games.value)
-    .map((game) => game.moves.split(' ')[0])
+  _.chain(games.value)
+    .map((game: Game) => game.moveAtTurn(currentPlayer.value, 0))
     .countBy()
     .toPairs()
     .sortBy(1)
@@ -34,8 +34,8 @@ const openings = computed(() =>
     .value()
 )
 
-const yAxisData = computed(() => openings.value.map((opening) => opening[0]))
-const seriesData = computed(() => openings.value.map((opening) => opening[1]))
+const yAxisData = computed(() => openings.value.map((o: any) => o[0]))
+const seriesData = computed(() => openings.value.map((o: any) => o[1]))
 
 use([
   GridComponent,
