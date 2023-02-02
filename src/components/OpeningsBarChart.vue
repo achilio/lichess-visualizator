@@ -18,24 +18,41 @@ import { ref, provide, computed } from 'vue'
 import { useGames } from '@/composables/games'
 import { Game } from '@/services/chess-api/types'
 import _ from 'lodash'
+import { EChartsOption } from 'echarts'
 
 const name = 'OpeningsBarChart'
 
 const { games, currentPlayer } = useGames()
-// Find and sort openings by frequency with lodash and reverse the array to get the most frequent openings first
 
-const openings = computed(() =>
-  _.chain(games.value)
-    .map((game: Game) => game.moveAtTurn(currentPlayer.value, 0))
-    .countBy()
-    .toPairs()
-    .sortBy(1)
-    .reverse()
+// Group games by current player color and first move. Sort by count
+const openings = computed(() => {
+  const colorMove = new Map()
+  const openings = _.chain(games.value)
+    .map((g: Game) => {
+      const move = g.moveAtTurn(currentPlayer.value, 0)
+      const color = g.playerColor(currentPlayer.value)
+      colorMove.set(move, color)
+      return {
+        move,
+        color,
+      }
+    })
     .value()
-)
 
-const yAxisData = computed(() => openings.value.map((o: any) => o[0]))
-const seriesData = computed(() => openings.value.map((o: any) => o[1]))
+  const final = _.map(_.countBy(openings, 'move'), (val, key) => ({
+    move: key,
+    value: val,
+    color: colorMove.get(key),
+    itemStyle: {
+      color: colorMove.get(key) === 'black' ? 'black' : '#ededed',
+      borderColor: '#dbdbdb',
+    },
+  }))
+
+  return _.orderBy(final, 'value', 'desc')
+})
+
+const yAxisData = computed(() => openings.value.map((o: any) => o.move))
 
 use([
   GridComponent,
@@ -46,39 +63,47 @@ use([
   BarChart,
 ])
 const data = []
-const option = computed(() => ({
-  xAxis: {
-    max: 'dataMax',
-  },
-  yAxis: {
-    type: 'category',
-    data: yAxisData.value,
-    inverse: true,
-    animationDuration: 300,
-    animationDurationUpdate: 300,
-    max: 2, // only the largest 3 bars will be displayed
-  },
-  series: [
-    {
-      realtimeSort: true,
-      name: 'X',
-      type: 'bar',
-      data: seriesData.value,
-      label: {
-        show: true,
-        position: 'right',
-        valueAnimation: true,
+const option = computed(
+  () =>
+    ({
+      title: {
+        text: 'First move on opening',
       },
-    },
-  ],
-  legend: {
-    show: true,
-  },
-  animationDuration: 0,
-  animationDurationUpdate: 3000,
-  animationEasing: 'linear',
-  animationEasingUpdate: 'linear',
-}))
+      xAxis: {
+        max: 'dataMax',
+      },
+      yAxis: {
+        type: 'category',
+        data: yAxisData.value,
+        inverse: true,
+        animationDuration: 300,
+        animationDurationUpdate: 300,
+        max: 8,
+      },
+      series: [
+        {
+          realtimeSort: true,
+          type: 'bar',
+          data: openings.value,
+          label: {
+            show: true,
+            position: 'right',
+            valueAnimation: true,
+          },
+        },
+      ],
+      legend: {
+        show: true,
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      animationDuration: 0,
+      animationDurationUpdate: 3000,
+      animationEasing: 'linear',
+      animationEasingUpdate: 'linear',
+    } as EChartsOption)
+)
 </script>
 
 <style scoped>

@@ -8,11 +8,11 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="3" style="height: 200px">
-        <WinrateKpi />
+      <v-col cols="3" style="height: 400px">
+        <winrate-kpi />
       </v-col>
-      <v-col cols="3">
-        <OpeningsBarChart />
+      <v-col cols="9">
+        <openings-bar-chart />
       </v-col>
     </v-row>
   </v-container>
@@ -26,7 +26,7 @@ import OpeningsBarChart from './OpeningsBarChart.vue'
 const name = 'HomePage'
 
 const { games, loadGames } = useGames()
-loadGames('JeNeSuisPasKasparov', 1000)
+loadGames('NicoBladeWing', 100000)
 </script>
 <style scoped>
 .v-container {
