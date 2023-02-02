@@ -17,7 +17,7 @@ import {
 import VChart from 'vue-echarts'
 import { EChartsOption } from 'echarts'
 import { use } from 'echarts/core'
-const { games } = useGames()
+const { games, currentPlayer } = useGames()
 
 use([
   GaugeChart,
@@ -30,11 +30,9 @@ use([
 
 // compute the winrate of all games fetched
 const winrate = computed(() => {
-  const wins = games.value.filter((game) => {
-    const player =
-      game.players.black.user.name === 'JeNeSuisPasKasparov' ? 'black' : 'white'
-    return game.winner === player
-  }).length
+  const wins = games.value.filter((game) =>
+    game.isWinner(currentPlayer.value)
+  ).length
   const wr: number = wins / games.value.length
   return wr
 })

@@ -1,4 +1,4 @@
-import { ChessApiConfig, ChessApi, Game } from './types'
+import { ChessApiConfig, ChessApi, GameDefinition, Game } from './types'
 import request from 'request'
 
 const baseApi = 'https://lichess.org/api'
@@ -18,12 +18,12 @@ export default class LichessApi extends ChessApi {
    * Start fetching games
    */
   async startFetching(): Promise<void> {
-    const username = this.config.username
+    const playerName = this.config.playerName
     const max = this.config.maxGames
     const onGame = this.config.onGame
     const onStartFetching = this.config.onStartFetching
     const onEndFetching = this.config.onEndFetching
-    request(`${baseApi}/games/user/${username}?max=${max}`, httpParams)
+    request(`${baseApi}/games/user/${playerName}?max=${max}`, httpParams)
       .on('response', (response) => {
         if (response.statusCode !== 200) {
           onEndFetching && onEndFetching()
@@ -39,7 +39,7 @@ export default class LichessApi extends ChessApi {
         const games: string[] = data.toString().split(/[\r\n]/)
         games.pop()
         games.forEach((game: string) => {
-          onGame && onGame(JSON.parse(game) as Game)
+          onGame && onGame(new Game(JSON.parse(game) as GameDefinition))
         })
       })
   }
