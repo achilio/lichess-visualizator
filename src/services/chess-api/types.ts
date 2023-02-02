@@ -22,10 +22,11 @@ export interface CallbackOnGame {
 }
 
 export interface Player {
-  user: {
+  user?: {
     name: string
     id: string
   }
+  aiLevel?: number
   rating: number
   ratingDiff: number
 }
@@ -94,9 +95,9 @@ export class Game implements GameDefinition {
    * @returns - The color of the player
    */
   playerColor(playerName: string): 'white' | 'black' {
-    if (this.players.white.user.name === playerName) {
+    if (this.players.white.user?.name === playerName) {
       return 'white'
-    } else if (this.players.black.user.name === playerName) {
+    } else if (this.players.black.user?.name === playerName) {
       return 'black'
     } else {
       throw new Error(`Player ${playerName} not found in game ${this.id}`)
