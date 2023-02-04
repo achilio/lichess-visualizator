@@ -28,7 +28,7 @@ echarts.use([
   LegendComponent,
 ])
 
-const { games, isWin } = useGames()
+const { games, currentPlayer } = useGames()
 
 const gamesLast30Days = computed(() => {
   return games.value.filter((game: Game) => {
@@ -39,8 +39,6 @@ const gamesLast30Days = computed(() => {
   })
 })
 
-// gamesLast30Days.value.reverse()
-
 const gameTimestampsLastThirtyDays = computed(() =>
   gamesLast30Days.value.map((game: Game) => game.lastMoveAt)
 )
@@ -48,7 +46,7 @@ const gameTimestampsLastThirtyDays = computed(() =>
 const winsLastThirtyDays = computed(() => {
   let winCount: number = 0
   return gamesLast30Days.value.map((game: Game) => {
-    if (isWin(game, 'JeNeSuisPasKasparov')) {
+    if (game.isWinner(currentPlayer.value)) {
       winCount++
     }
     return winCount
