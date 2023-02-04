@@ -16,7 +16,7 @@ export const useGames = () => {
       maxGames: max,
       onGame: (game) => {
         // The callback is called for each game fetched
-        games.value.push(game)
+        games.value.unshift(game)
       },
       onStartFetching: () => {
         // The callback is called when the fetching starts

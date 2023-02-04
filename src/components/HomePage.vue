@@ -15,6 +15,11 @@
         <openings-bar-chart />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <wins-over-time-line-chart />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -22,6 +27,7 @@
 import { useGames } from '@/composables/games'
 import WinrateKpi from './WinrateKpi.vue'
 import OpeningsBarChart from './OpeningsBarChart.vue'
+import WinsOverTimeLineChart from './WinsOverTimeLineChart.vue'
 
 const name = 'HomePage'
 
