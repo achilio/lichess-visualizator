@@ -8,10 +8,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="3" style="height: 400px">
+      <v-col cols="6" style="height: 400px">
         <winrate-kpi />
       </v-col>
-      <v-col cols="9">
+    </v-row>
+    <v-row>
+      <v-col cols="12" style="height: 400px">
         <openings-bar-chart />
       </v-col>
     </v-row>
