@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import { useGames } from '@/composables/games'
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref, Ref } from 'vue'
 import { CanvasRenderer } from 'echarts/renderers'
 import { GaugeChart } from 'echarts/charts'
 import {
@@ -28,6 +28,8 @@ use([
   LegendComponent,
 ])
 
+const winrates: Ref<number[]> = ref([])
+
 // compute the winrate of all games fetched
 const winrate = computed(() => {
   const wins = games.value.filter((game) =>
@@ -37,28 +39,36 @@ const winrate = computed(() => {
   return wr
 })
 
+const wr: Ref<number> = ref(0.5)
+setInterval(() => {
+  winrates.value.push(winrate.value)
+  wr.value = winrate.value
+}, 500)
+
 // options for the chart
 const options: ComputedRef<EChartsOption> = computed(() => {
   return {
     tooltip: { formatter: '{a} <br/>{b} : {c}' },
-    stateAnimation: { duration: 1000, easing: 'cubicOut' },
     animation: true,
     series: [
       {
         name: 'Winrate',
+        min: Math.min(...winrates.value) - 0.05,
+        max: Math.max(...winrates.value) + 0.05,
         type: 'gauge',
-        progress: {
-          show: true,
-          width: 18,
+        axisLabel: {
+          formatter: function (value) {
+            return Math.round(value * 100) + ''
+          },
         },
         detail: {
           formatter: function (value) {
-            return Math.round(value * 100) + ''
+            return (value * 100).toFixed(2)
           },
           valueAnimation: true,
           offsetCenter: [0, '50%'],
         },
-        data: [{ value: winrate.value, name: 'Winrate (%)' }],
+        data: [{ value: wr.value, name: 'Winrate (%)' }],
       },
     ],
   }
