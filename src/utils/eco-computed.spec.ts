@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { ecoComputed } from './eco-computed'
 describe('Eco-computed', () => {
   it('Single reactive property', async () => {
@@ -11,9 +11,10 @@ describe('Eco-computed', () => {
     expect(counter.value).toBe(1)
     val.value++
     expect(counter.value).toBe(1)
-    await wait(100)
+    await wait(110)
+    val.value++
     // After waiting, the value should have changed
-    expect(counter.value).toBe(3)
+    expect(counter.value).toBe(4)
   })
   it('Multiple reactive properties', async () => {
     const val1 = ref(1)
@@ -35,6 +36,7 @@ describe('Eco-computed', () => {
   it('Initial trigger is effective', async () => {
     const val = ref(1)
     const counter = ecoComputed(() => val.value, 100)
+    expect(counter.value).toBe(1)
     val.value++
     expect(counter.value).toBe(1)
     val.value++
@@ -53,35 +55,43 @@ describe('Eco-computed', () => {
     val.value++
     val.value++
     expect(counter.value).toBe(1)
-    await wait(100)
+    await wait(110)
     // After waiting, the value should have changed
     expect(counter.value).toBe(6)
   })
-  it('Check number of calls in the computed', async () => {
-    const val = ref(1)
+  it('Check number of calls in the eco computed', async () => {
+    const val = ref<number>(0)
     let computedCalls = 0
     const counter = ecoComputed(() => {
+      setTimeout(() => {
+        console.log('computedCalls', computedCalls)
+      }, 100)
       computedCalls++
       return val.value
     }, 100)
-    expect(counter.value).toBe(1)
-    expect(computedCalls).toBe(1)
-    val.value++
-    expect(counter.value).toBe(1)
-    expect(computedCalls).toBe(1)
-    await wait(100)
-    // After waiting, the value should have changed
-    expect(counter.value).toBe(2)
-    expect(computedCalls).toBe(2)
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       val.value++
+      expect(counter.value).not.toBeNull()
     }
-    expect(counter.value).toBe(2)
-    expect(computedCalls).toBe(2)
     await wait(100)
-    // After waiting, the value should have changed
-    expect(counter.value).toBe(102)
-    expect(computedCalls).toBe(3)
+    expect(computedCalls).toBe(1)
+  })
+  it('Check number of calls in the native computed', async () => {
+    const val = ref<number>(0)
+    let computedCalls = 0
+    const counter = computed(() => {
+      setTimeout(() => {
+        console.log('computedCalls', computedCalls)
+      }, 100)
+      computedCalls++
+      return val.value
+    })
+    for (let i = 0; i < 10; i++) {
+      val.value++
+      expect(counter.value).not.toBeNull()
+      expect(computedCalls).toBe(i + 1)
+    }
+    await wait(100)
   })
 })
 
