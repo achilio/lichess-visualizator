@@ -20,6 +20,7 @@
     "@mdi/font": "5.9.55",
     "@types/lodash": "^4.14.191",
     "echarts": "^5.4.1",
+    "gridstack": "^7.2.3",
     "request": "^2.88.2",
     "roboto-fontface": "*",
     "vue": "^3.2.45",

@@ -19,13 +19,14 @@ import { useGames } from '@/composables/games'
 import { Game } from '@/services/chess-api/types'
 import _ from 'lodash'
 import { EChartsOption } from 'echarts'
+import { ecoComputed } from '@/utils/eco-computed'
 
 const name = 'OpeningsBarChart'
 
 const { games, currentPlayer } = useGames()
 
 // Group games by current player color and first move. Sort by count
-const openings = computed(() => {
+const openings = ecoComputed(() => {
   const colorMove = new Map()
   const openings = _.chain(games.value)
     .map((g: Game) => {
@@ -50,7 +51,7 @@ const openings = computed(() => {
   }))
 
   return _.orderBy(final, 'value', 'desc')
-})
+}, 500)
 
 const yAxisData = computed(() => openings.value.map((o: any) => o.move))
 

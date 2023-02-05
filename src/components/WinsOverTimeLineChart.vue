@@ -17,6 +17,7 @@ import {
 import { useGames } from '@/composables/games'
 import { Game } from '@/services/chess-api/types'
 import { computed, ComputedRef } from 'vue'
+import { ecoComputed } from '@/utils/eco-computed'
 
 echarts.use([
   LineChart,
@@ -30,20 +31,21 @@ echarts.use([
 
 const { games, currentPlayer } = useGames()
 
-const gamesLast30Days = computed(() => {
+const gamesLast30Days = ecoComputed(() => {
   return games.value.filter((game: Game) => {
     const date = new Date(game.lastMoveAt)
     const diff = new Date().getTime() - date.getTime()
     const daysAgo = Math.floor(diff / (1000 * 60 * 60 * 24))
     return daysAgo < 30
   })
-})
+}, 50)
 
-const gameTimestampsLastThirtyDays = computed(() =>
-  gamesLast30Days.value.map((game: Game) => game.lastMoveAt)
+const gameTimestampsLastThirtyDays = ecoComputed(
+  () => gamesLast30Days.value.map((game: Game) => game.lastMoveAt),
+  50
 )
 
-const winsLastThirtyDays = computed(() => {
+const winsLastThirtyDays = ecoComputed(() => {
   let winCount: number = 0
   return gamesLast30Days.value.map((game: Game) => {
     if (game.isWinner(currentPlayer.value)) {
@@ -51,7 +53,7 @@ const winsLastThirtyDays = computed(() => {
     }
     return winCount
   })
-})
+}, 50)
 
 const dataSeries = computed(() => {
   return winsLastThirtyDays.value.map((winCount, index) => {
