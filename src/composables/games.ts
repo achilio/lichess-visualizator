@@ -16,12 +16,13 @@ export interface LoadContext {
 export const useGames = () => {
   const loadGames = async (context: LoadContext) => {
     // Reset the games
+    games.value = []
     currentPlayer.value = context.playerName
     const api = chessApi.init(context.website, {
       playerName: context.playerName,
       maxGames: context.maxGames,
       onGame: (game) => games.value.unshift(game),
-      onStartFetching: () => (games.value = []) && (loading.value = true),
+      onStartFetching: () => (loading.value = true),
       onEndFetching: () => (loading.value = false),
     })
     // Start fetching games
