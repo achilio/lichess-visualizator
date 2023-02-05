@@ -76,23 +76,6 @@ describe('Eco-computed', () => {
     await wait(100)
     expect(computedCalls).toBe(1)
   })
-  it('Check number of calls in the native computed', async () => {
-    const val = ref<number>(0)
-    let computedCalls = 0
-    const counter = computed(() => {
-      setTimeout(() => {
-        console.log('computedCalls', computedCalls)
-      }, 100)
-      computedCalls++
-      return val.value
-    })
-    for (let i = 0; i < 10; i++) {
-      val.value++
-      expect(counter.value).not.toBeNull()
-      expect(computedCalls).toBe(i + 1)
-    }
-    await wait(100)
-  })
 })
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))

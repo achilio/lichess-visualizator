@@ -1,43 +1,52 @@
 import { computed, ComputedRef, Ref, ref } from 'vue'
 
 /**
- * A computed that will not recompute too often
- * @param fn The function to compute
- * @param minDelay The minimum delay between two computations
- * @returns A computed that will not recompute too often
+ * Creates a computed property that will not recompute too frequently.
+ *
+ * @template T
+ * @param {() => T} fn - A function that returns a value of type T
+ * @param {number} minDelay - The minimum delay, in milliseconds, between two computations
+ * @returns {ComputedRef<T>} - A computed ref that returns the value of `fn` with a minimum delay of `minDelay` between two computations
+ *
+ * @example
+ * ```
+ * import { ecoComputed } from './ecoComputed';
+ *
+ * const counter = ref(0);
+ * const computedCounter = ecoComputed(() => counter.value + 1, 1000);
+ *
+ * console.log(computedCounter.value); // 1
+ * counter.value++;
+ * console.log(computedCounter.value); // 1
+ *
+ * setTimeout(() => {
+ *   console.log(computedCounter.value); // 2
+ * }, 1500);
+ * ```
  */
 export function ecoComputed<T>(fn: () => T, minDelay: number): ComputedRef<T> {
   let lastComputedValue: T
   let lastComputedAt = 0
-  let lock: boolean = false
-  const triggerRef: Ref<number> = ref(0)
+  let lock = false
+  const triggerRef = ref(0)
+
   return computed(() => {
     triggerRef.value
-    // Trigger a re-computation when the triggerRef changes
-    // If the last computation was too recent, schedule a new one
+
+    // Calculate the time when the next computation can be performed
     const nextComputedAvailableAt = lastComputedAt + minDelay
-    // If the next computation is scheduled in the future, return the cached value
-    // and schedule a new computation
-    if (nextComputedAvailableAt <= Date.now() && !lock) {
-      lock = true
-      // Recompute is allowed, clear the scheduled recompute
-      lastComputedValue = fn()
-      // Update the last computed time after the value has been computed
-      lastComputedAt = Date.now()
-      lock = false
-    } else {
-      // The delay to wait before recomputing
-      const delayNextCompute = nextComputedAvailableAt - Date.now()
-      // Schedule a new computation
-      setTimeout(
-        // Retrigger the computed when the timeout is over and reset the timeout
-        () => {
-          triggerRef.value++
-        },
-        delayNextCompute
-      )
+
+    // Check if the next computation can be performed now or if it needs to be scheduled
+    if (nextComputedAvailableAt > Date.now() || lock) {
+      setTimeout(() => triggerRef.value++, nextComputedAvailableAt - Date.now())
+      return lastComputedValue
     }
-    // Return the last computed value (either from the cache or from the function)
+
+    lock = true
+    lastComputedAt = Date.now()
+    lastComputedValue = fn()
+    lock = false
+
     return lastComputedValue
   })
 }
