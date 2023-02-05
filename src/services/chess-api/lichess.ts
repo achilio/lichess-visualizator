@@ -23,25 +23,32 @@ export default class LichessApi extends ChessApi {
     const onGame = this.config.onGame
     const onStartFetching = this.config.onStartFetching
     const onEndFetching = this.config.onEndFetching
-    request(`${baseApi}/games/user/${playerName}?max=${max}`, httpParams)
-      .on('response', (response) => {
-        if (response.statusCode !== 200) {
-          onEndFetching && onEndFetching()
-          throw new Error(`Failed to fetch games ${response}`)
-        }
-        onStartFetching && onStartFetching()
-      })
-      .on('end', () => onEndFetching && onEndFetching())
-      .on('data', (data: Uint8Array) => {
-        // The data is a stream of JSON objects separated by newlines
-        // Sometimes, it sends several objects in one chunk
-        // To parse the data as a JSON object, split the data by newlines and remove the last empty newline
-        const games: string[] = data.toString().split(/[\r\n]/)
-        games.pop()
-        games.forEach((game: string) => {
-          onGame && onGame(new Game(JSON.parse(game) as GameDefinition))
+    return new Promise((resolve, reject) =>
+      request(`${baseApi}/games/user/${playerName}?max=${max}`, httpParams)
+        .on('response', (response) => {
+          if (response.statusCode !== 200) {
+            onEndFetching && onEndFetching()
+            if (response.statusCode === 404) {
+              console.error('Player not found')
+              reject(`Player ${playerName} not found`)
+            }
+            reject(`Failed to fetch games ${response.statusCode}`)
+          }
+          onStartFetching && onStartFetching()
+          resolve()
         })
-      })
+        .on('end', () => onEndFetching && onEndFetching())
+        .on('data', (data: Uint8Array) => {
+          // The data is a stream of JSON objects separated by newlines
+          // Sometimes, it sends several objects in one chunk
+          // To parse the data as a JSON object, split the data by newlines and remove the last empty newline
+          const games: string[] = data.toString().split(/[\r\n]/)
+          games.pop()
+          games.forEach((game: string) => {
+            onGame && onGame(new Game(JSON.parse(game) as GameDefinition))
+          })
+        })
+    )
   }
 
   /**
