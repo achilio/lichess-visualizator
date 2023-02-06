@@ -5,7 +5,11 @@ import { Game, GameDefinition, Player } from '@/services/chess-api/types'
 describe('Games', () => {
   it('Should fetch games', async () => {
     const { games, loadGames } = useGames()
-    loadGames('JeNeSuisPasKasparov', 10)
+    loadGames({
+      playerName: 'JeNeSuisPasKasparov',
+      website: 'lichess',
+      maxGames: 10,
+    })
     await new Promise((resolve) => setTimeout(resolve, 2000))
     expect(games.value.length).toBe(10)
   })

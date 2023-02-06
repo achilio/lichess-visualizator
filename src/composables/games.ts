@@ -5,33 +5,34 @@ import { Game } from '@/services/chess-api/types'
 const games = ref<Game[]>([])
 const loading = ref<boolean>(false)
 const currentPlayer = ref<string>('')
+const errorMessage = ref<string>('')
+
+export interface LoadContext {
+  website: 'lichess'
+  playerName: string
+  maxGames: number
+}
 
 export const useGames = () => {
-  const loadGames = async (playerName: string, max: number) => {
+  const loadGames = async (context: LoadContext) => {
     // Reset the games
     games.value = []
-    currentPlayer.value = playerName
-    const api = chessApi.init('lichess', {
-      playerName,
-      maxGames: max,
-      onGame: (game) => {
-        // The callback is called for each game fetched
-        games.value.unshift(game)
-      },
-      onStartFetching: () => {
-        // The callback is called when the fetching starts
-        games.value = []
-        loading.value = true
-      },
-      onEndFetching: () => {
-        // The callback is called when the fetching is done
-        loading.value = false
-        api.stopFetching()
-      },
+    currentPlayer.value = context.playerName
+    const api = chessApi.init(context.website, {
+      playerName: context.playerName,
+      maxGames: context.maxGames,
+      onGame: (game) => games.value.unshift(game),
+      onStartFetching: () => (loading.value = true),
+      onEndFetching: () => (loading.value = false),
     })
     // Start fetching games
-    api.startFetching()
+    try {
+      await api.startFetching()
+    } catch (error: any) {
+      errorMessage.value = error
+      loading.value = false
+    }
   }
 
-  return { games, loadGames, currentPlayer }
+  return { games, loadGames, currentPlayer, loading, errorMessage }
 }
