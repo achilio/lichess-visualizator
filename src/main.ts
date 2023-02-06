@@ -5,7 +5,6 @@ import vueEcharts from 'vue-echarts'
 import 'echarts/lib/chart/line'
 import { loadFonts } from './plugins/webfontloader'
 import router from './router'
-import './style.css'
 
 loadFonts()
 

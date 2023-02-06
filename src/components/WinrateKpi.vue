@@ -1,10 +1,10 @@
 <template>
-  <v-chart class="chart" :option="options" />
+  <v-chart class="chart" :option="options" style="height: 100%; width: 100%" />
 </template>
 
 <script setup lang="ts">
 import { useGames } from '@/composables/games'
-import { computed, ComputedRef, onMounted, ref, Ref } from 'vue'
+import { computed, ComputedRef, ref, Ref } from 'vue'
 import { CanvasRenderer } from 'echarts/renderers'
 import { GaugeChart } from 'echarts/charts'
 import {
@@ -84,7 +84,7 @@ const options: ComputedRef<EChartsOption> = computed(() => {
 </script>
 <style>
 .chart {
-  width: 300px;
-  height: 300px;
+  /* width: 100%;
+  height: 100%; */
 }
 </style>

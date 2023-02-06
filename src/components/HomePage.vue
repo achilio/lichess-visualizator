@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-4">
+  <v-container fluid class="pa-4">
     <v-row class="text-center">
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
@@ -7,25 +7,21 @@
         </h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <div class="grid-stack">
-          <div
-            v-for="(component, key, index) in components"
-            :key="'component' + index"
-            :gs-id="key"
-            class="grid-stack-item"
-            :gs-h="component.gridPos.h"
-            :gs-w="component.gridPos.w"
-            gs-auto-position="true"
-          >
-            <div class="grid-stack-item-content">
-              <component :is="component.name" v-bind="component.props" />
-            </div>
-          </div>
+    <div class="grid-stack">
+      <div
+        v-for="(component, key, index) in components"
+        :key="'component' + index"
+        :gs-id="key"
+        class="grid-stack-item"
+        :gs-h="component.gridPos.h"
+        :gs-w="component.gridPos.w"
+        gs-auto-position="true"
+      >
+        <div class="grid-stack-item-content">
+          <component :is="component.name" v-bind="component.props" />
         </div>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
   </v-container>
 </template>
 
@@ -41,16 +37,6 @@ const { games, loadGames } = useGames()
 loadGames('NicoBladeWing', 100000)
 
 let grid: GridStack | null = null
-let components = shallowRef([
-  {
-    name: WinrateKpi,
-    props: {},
-    gridPos: {
-      w: 4,
-      h: 4,
-    },
-  },
-])
 
 onMounted(() => {
   grid = GridStack.init({
@@ -65,12 +51,22 @@ onMounted(() => {
     minRow: 1,
   })
 })
+
+let components = shallowRef([
+  {
+    name: WinrateKpi,
+    props: {},
+    gridPos: {
+      w: 3,
+      h: 3,
+    },
+  },
+])
 </script>
 
 <style>
 .v-container {
   width: 100%;
-  margin-right: 0;
 }
 
 .grid-stack {
